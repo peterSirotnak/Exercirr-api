@@ -13,8 +13,8 @@ import (
 
 func Login(user Entity.User, c *gin.Context) {
 	db := Database.DbConnection
-	var getUserById string = fmt.Sprintf(`select * from user_entity ue WHERE user_email = '%s'`, user.Email)
-	dbResponse, err := db.Query(getUserById)
+	var getUserByEmail string = fmt.Sprintf(`select * from user_entity ue WHERE user_email = '%s'`, user.Email)
+	dbResponse, err := db.Query(getUserByEmail)
 	if err != nil {
 		log.Default().Println(err)
 		panic(err)

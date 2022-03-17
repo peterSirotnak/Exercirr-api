@@ -2,6 +2,7 @@ package Helpers
 
 import (
 	Entity "Exercirr-api/Types/Entities"
+	"math/rand"
 	"os"
 	"time"
 
@@ -28,4 +29,16 @@ func CompareHashAndPassword(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 
+}
+func GenerateId() string {
+	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, 27)
+	for i := range b {
+		b[i] = letterBytes[seededRand.Intn(len(letterBytes))]
+	}
+	b[6] = '-'
+	b[13] = '-'
+	b[20] = '-'
+	return string(b)
 }
