@@ -13,7 +13,7 @@ import (
 
 func Login(user Entity.User, c *gin.Context) {
 	db := Database.DbConnection
-	var getUserById string = fmt.Sprintf(`select * from user_entity ue WHERE id LIKE '%s'`, user.ID)
+	var getUserById string = fmt.Sprintf(`select * from user_entity ue WHERE user_email = '%s'`, user.Email)
 	dbResponse, err := db.Query(getUserById)
 	if err != nil {
 		log.Default().Println(err)
@@ -33,7 +33,7 @@ func Login(user Entity.User, c *gin.Context) {
 		}
 	}
 	var passwordsMatch bool = Helpers.CompareHashAndPassword(user.Password, foundUser.Password)
-	if user.Username != foundUser.Username || !passwordsMatch || foundUser.ID == "" {
+	if !passwordsMatch || foundUser.ID == "" {
 		c.JSON(http.StatusUnauthorized, "Invalid Credentials")
 		return
 	} else {
