@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -44,6 +45,14 @@ func SignUp(user Entity.User, c *gin.Context) {
 		SignUp(user, c)
 	}
 	var createNewUser string = fmt.Sprintf(`INSERT INTO user_entity VALUES ('%s', '%s', '%s', '%s')`, user.ID, user.Username, user.Password, user.Email)
-	db.Query(createNewUser)
+	resp, err := db.Query(createNewUser)
+	if err != nil {
+		log.Default().Println(err)
+		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			c.JSON(http.StatusConflict, "Email Already Exists")
+		}
+		panic(err)
+	}
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, "User Successfully Created")
 }
